@@ -6,25 +6,61 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
+    id            String   @id @default(nanoid())
+    createdAt     DateTime @default(now())
+    createdBy     User     @relation(fields: [createdByUser], references: [name], onDelete: Cascade)
+    createdByUser String
+
+    title       String
+    value       String
+    description String
+    points      Int       @default(1)
+    upvotes     Upvote[]
+    comments    Comment[]
+}
+
+model Comment {
+    id            String   @id @default(nanoid())
+    createdAt     DateTime @default(now())
+    createdBy     User     @relation("createdBy", fields: [createdByUser], references: [name], onDelete: Cascade)
+    createdByUser String
+    post          Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId        String
+
+    points  Int      @default(1)
+    upvotes Upvote[]
+    text    String
+
+    replies   Comment[] @relation("CommentToComment")
+    replyTo   Comment?  @relation("CommentToComment", fields: [replyToId], references: [id], onDelete: Cascade)
+    replyToId String?
+}
+
+model Upvote {
+    id        String   @id @default(nanoid())
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
 
-    @@index([name])
+    comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    commentId String?
+
+    post   Post?   @relation(fields: [postId], references: [id])
+    postId String?
+
+    @@unique([userId, commentId])
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
+    id                String  @id @default(nanoid())
     userId            String
     type              String
     provider          String
@@ -42,7 +78,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           String   @id @default(nanoid())
     sessionToken String   @unique
     userId       String
     expires      DateTime
@@ -50,14 +86,18 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    id            String    @id @default(nanoid())
+    createdAt     DateTime  @default(now())
+    name          String    @unique
+    email         String    @unique
     emailVerified DateTime?
     image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+
+    accounts Account[]
+    sessions Session[]
+    posts    Post[]
+    Comment  Comment[] @relation("createdBy")
+    Upvote   Upvote[]
 }
 
 model VerificationToken {
