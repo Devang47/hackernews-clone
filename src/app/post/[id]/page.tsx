@@ -16,7 +16,12 @@ export default async function page({ params }: { params: { id: string } }) {
     getServerAuthSession(),
   ]);
 
-  if (!data) return null;
+  if (!data)
+    return (
+      <h1 className="py-20 text-center text-2xl font-medium">
+        404 | Not found
+      </h1>
+    );
 
   let datePassed = formatDistance(new Date(data.createdAt), new Date(), {
     addSuffix: true,

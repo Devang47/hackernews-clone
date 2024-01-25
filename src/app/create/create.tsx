@@ -59,10 +59,6 @@ export default function CreatePost() {
     }
   }
 
-  // return status === "unauthenticated" ? (
-  //   <div className="">
-  //     You need to <Link href="/api/auth/signin">Login</Link>
-  //   </div>
   return (
     <main className="mt-10">
       <h1 className="text-2xl font-bold lg:text-3xl">Create post</h1>

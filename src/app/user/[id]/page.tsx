@@ -3,6 +3,7 @@ import Post from "~/app/_components/post";
 import Comment from "~/app/_components/comment";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import { formatDistance } from "date-fns";
 
 export default async function page({ params }: { params: { id: string } }) {
   const [userData, userPosts, userComments, session] = await Promise.all([
@@ -18,6 +19,15 @@ export default async function page({ params }: { params: { id: string } }) {
     getServerAuthSession(),
   ]);
 
+  if (!userData)
+    return (
+      <h1 className="py-20 text-center text-2xl font-medium">User not found</h1>
+    );
+
+  let datePassed = formatDistance(new Date(userData.createdAt), new Date(), {
+    addSuffix: true,
+  });
+
   return (
     <main className="mt-8">
       {!!userData ? (
@@ -32,6 +42,8 @@ export default async function page({ params }: { params: { id: string } }) {
               day: "numeric",
               year: "numeric",
             })}
+
+            <span className="opacity-70">{datePassed}</span>
           </div>
 
           <div className="mt-10">

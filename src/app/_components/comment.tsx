@@ -4,14 +4,12 @@ import { Comment } from "@prisma/client";
 import { formatDistance } from "date-fns";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import UpIcon from "~/lib/icons/upIcon";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import AddComment from "./addComment";
 import Spinner from "~/app/_components/spinner";
-import { useRouter } from "next/navigation";
 
 function Comment({
   data,
@@ -72,7 +70,10 @@ function Comment({
 
         <div className="w-full text-gray-300">
           <div className="flex items-center gap-2 text-sm opacity-80">
-            <Link className="!p-0" href={"/user/" + data.createdByUser}>
+            <Link
+              className="!p-0 hover:underline"
+              href={"/user/" + data.createdByUser}
+            >
               {data.createdByUser}
             </Link>
 
