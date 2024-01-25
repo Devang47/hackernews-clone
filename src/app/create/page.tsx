@@ -7,7 +7,7 @@ export default async function page() {
   const session = await getServerAuthSession()
 
   if (session) return <CreatePost />
-  else
+  else {
     return (
       <h1 className="py-20 text-center text-2xl font-medium">
         Please
@@ -20,4 +20,5 @@ export default async function page() {
         in order to perform this action
       </h1>
     )
+  }
 }

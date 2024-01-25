@@ -107,14 +107,15 @@ export const commentRouter = createTRPCRouter({
         }
       })
 
-      if (comment?.createdByUser !== ctx.session.user.name)
+      if (comment?.createdByUser !== ctx.session.user.name) {
         throw new Error('You are not the owner of this comment')
-      else
+      } else {
         return ctx.db.comment.delete({
           where: {
             id: input.commentId
           }
         })
+      }
     }),
 
   getCommentsOfPost: publicProcedure

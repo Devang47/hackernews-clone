@@ -14,7 +14,7 @@ function Post({ data }: { data: Post }) {
   const [isUpvoted, setIsUpvoted] = useState(false)
 
   const upvotePost = api.post.upvotePost.useMutation()
-  let { data: isPostUpvoted, isLoading } =
+  const { data: isPostUpvoted, isLoading } =
     api.post.isPostUpvotedByUser.useQuery({
       postId: data.id
     })

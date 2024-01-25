@@ -91,14 +91,15 @@ export const postRouter = createTRPCRouter({
         }
       })
 
-      if (post?.createdByUser !== ctx.session.user.name)
+      if (post?.createdByUser !== ctx.session.user.name) {
         throw new Error('You are not the owner of this post')
-      else
+      } else {
         return ctx.db.post.delete({
           where: {
             id: input.postId
           }
         })
+      }
     }),
 
   getAllPostsByUser: publicProcedure

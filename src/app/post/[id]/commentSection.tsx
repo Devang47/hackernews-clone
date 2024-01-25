@@ -34,7 +34,11 @@ function CommentSection({
       <div className="mt-4 space-y-6">
         {commentsData.length > 0 ? (
           commentsData.map((data) => (
-            <Comment isUserLoggedIn={isUserLoggedIn} data={data} />
+            <Comment
+              key={data.id}
+              isUserLoggedIn={isUserLoggedIn}
+              data={data}
+            />
           ))
         ) : (
           <span className="opacity-70">No comments to show</span>

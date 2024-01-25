@@ -21,12 +21,12 @@ function Comment({
   const [isUpvoted, setIsUpvoted] = useState(false)
   const [isReplyModelOpen, setIsReplyModelOpen] = useState(false)
 
-  let datePassed = formatDistance(new Date(data.createdAt), new Date(), {
+  const datePassed = formatDistance(new Date(data.createdAt), new Date(), {
     addSuffix: true
   })
 
   const upvoteComment = api.comment.upvoteComment.useMutation()
-  let { data: isPostUpvoted, isLoading } =
+  const { data: isPostUpvoted, isLoading } =
     api.comment.isCommentUpvotedByUser.useQuery({
       commentId: data.id
     })

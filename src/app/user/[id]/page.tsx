@@ -19,18 +19,19 @@ export default async function page({ params }: { params: { id: string } }) {
     getServerAuthSession()
   ])
 
-  if (!userData)
+  if (!userData) {
     return (
       <h1 className="py-20 text-center text-2xl font-medium">User not found</h1>
     )
+  }
 
-  let datePassed = formatDistance(new Date(userData.createdAt), new Date(), {
+  const datePassed = formatDistance(new Date(userData.createdAt), new Date(), {
     addSuffix: true
   })
 
   return (
     <main className="mt-8">
-      {!!userData ? (
+      {userData ? (
         <div className="mt-10">
           <div className="">
             <span className="opacity-50">Name:</span> {userData.name}
@@ -52,7 +53,7 @@ export default async function page({ params }: { params: { id: string } }) {
             </h2>
             <div className="mt-2 grid w-full grid-cols-1">
               {userPosts
-                ? userPosts?.map((postData) => <Post data={postData} />)
+                ? userPosts?.map((data) => <Post key={data.id} data={data} />)
                 : 'No posts'}
             </div>
           </div>
@@ -64,8 +65,12 @@ export default async function page({ params }: { params: { id: string } }) {
               </h2>
               <div className="mt-4 space-y-6">
                 {userComments
-                  ? userComments?.map((commentData) => (
-                      <Comment isUserLoggedIn={!!session} data={commentData} />
+                  ? userComments?.map((data) => (
+                      <Comment
+                        key={data.id}
+                        isUserLoggedIn={!!session}
+                        data={data}
+                      />
                     ))
                   : 'No posts'}
               </div>
