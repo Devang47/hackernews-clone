@@ -1,15 +1,21 @@
 import React from "react";
 import Post from "~/app/_components/post";
+import Comment from "~/app/_components/comment";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 export default async function page({ params }: { params: { id: string } }) {
-  const [userData, userPosts] = await Promise.all([
+  const [userData, userPosts, userComments, session] = await Promise.all([
     api.user.getUserInfo.query({
       userId: params.id ?? "",
     }),
     api.user.getPostsByUser.query({
       userId: params.id ?? "",
     }),
+    api.user.getCommentsByUser.query({
+      userId: params.id ?? "",
+    }),
+    getServerAuthSession(),
   ]);
 
   return (
@@ -38,6 +44,21 @@ export default async function page({ params }: { params: { id: string } }) {
                 : "No posts"}
             </div>
           </div>
+
+          {userComments.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-sm font-medium opacity-50">
+                Latest comments by {userData.name}:
+              </h2>
+              <div className="mt-4 space-y-6">
+                {userComments
+                  ? userComments?.map((commentData) => (
+                      <Comment isUserLoggedIn={!!session} data={commentData} />
+                    ))
+                  : "No posts"}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <p className="text-center text-2xl font-semibold lg:text-3xl">

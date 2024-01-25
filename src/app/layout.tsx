@@ -26,13 +26,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider>
-            <section>
-              <div className="container mx-auto max-w-4xl px-4">
-                <Header />
+          <section>
+            <div className="container mx-auto max-w-4xl px-4">
+              <Header />
 
-                {children}
-              </div>
-            </section>
+              {children}
+            </div>
+          </section>
         </TRPCReactProvider>
         <Toaster />
       </body>

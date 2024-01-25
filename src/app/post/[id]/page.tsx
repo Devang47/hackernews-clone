@@ -1,19 +1,29 @@
 import { api } from "~/trpc/server";
+import { formatDistance } from "date-fns";
 import React from "react";
 import Link from "next/link";
-import AddComment from "./addComment";
+import CommentSection from "./commentSection";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function page({ params }: { params: { id: string } }) {
-  const data = await api.post.getPostInfo.query({
-    postId: params.id ?? "",
-  });
+  const [data, comments, session] = await Promise.all([
+    api.post.getPostInfo.query({
+      postId: params.id ?? "",
+    }),
+    api.comment.getCommentsOfPost.query({
+      postId: params.id ?? "",
+    }),
+    getServerAuthSession(),
+  ]);
 
-  const comments = await api.comment.getCommentsOfPost.query({
-    postId: params.id ?? "",
+  if (!data) return null;
+
+  let datePassed = formatDistance(new Date(data.createdAt), new Date(), {
+    addSuffix: true,
   });
 
   return (
-    <main className="mt-8">
+    <main className="mt-8 pb-20">
       {!!data ? (
         <>
           <Link className="block w-fit hover:underline" href={data.value}>
@@ -40,6 +50,8 @@ export default async function page({ params }: { params: { id: string } }) {
               day: "numeric",
               year: "numeric",
             })}
+
+            <span className="ml-2 opacity-70">({datePassed})</span>
           </div>
 
           <div className="mt-2 text-sm">
@@ -52,15 +64,11 @@ export default async function page({ params }: { params: { id: string } }) {
             </Link>
           </div>
 
-          <AddComment />
-
-          <div className="mt-10 space-y-3">
-            {comments.length > 0 ? (
-              comments.map((data) => <div className="">{data.text}</div>)
-            ) : (
-              <span className="opacity-70">No comments to show</span>
-            )}
-          </div>
+          <CommentSection
+            isUserLoggedIn={!!session}
+            comments={comments}
+            postId={data.id}
+          />
         </>
       ) : (
         <p className="text-center text-2xl font-semibold lg:text-3xl">

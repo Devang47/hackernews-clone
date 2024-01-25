@@ -26,7 +26,19 @@ export const userRouter = createTRPCRouter({
           createdByUser: input.userId,
         },
         orderBy: { createdAt: "desc" },
-        take: 50,
+        take: 10,
+      });
+    }),
+
+  getCommentsByUser: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.comment.findMany({
+        where: {
+          createdByUser: input.userId,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
       });
     }),
 });

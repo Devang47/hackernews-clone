@@ -14,7 +14,7 @@ export default async function page() {
       <div className="mt-10 grid w-full grid-cols-1">
         {posts.length > 0
           ? posts.map((post) => <Post key={post.id} data={post} />)
-          : "No posts to show"}
+          : "No trending posts in the last 24 hours"}
       </div>
     </main>
   );

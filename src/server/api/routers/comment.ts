@@ -30,17 +30,13 @@ export const commentRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.session) return false;
-
-      const comment = ctx.db.comment.create({
+      return await ctx.db.comment.create({
         data: {
           text: input.content,
           post: { connect: { id: input.postId } },
           createdBy: { connect: { name: ctx.session.user.name ?? "" } },
         },
       });
-
-      return comment;
     }),
 
   replyToComment: protectedProcedure
@@ -52,17 +48,14 @@ export const commentRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const comment = ctx.db.comment.create({
+      return await ctx.db.comment.create({
         data: {
           text: input.content,
           post: { connect: { id: input.postId } },
-          replyTo: { connect: { id: input.commentId } },
-
           createdBy: { connect: { name: ctx.session.user.name ?? "" } },
+          replyTo: { connect: { id: input.commentId } },
         },
       });
-
-      return comment;
     }),
 
   upvoteComment: protectedProcedure
@@ -131,10 +124,23 @@ export const commentRouter = createTRPCRouter({
         where: {
           postId: input.postId,
         },
-        include: {
-          createdBy: true,
-          upvotes: true,
-          replyTo: true,
+
+        orderBy: {
+          points: "desc",
+        },
+      });
+    }),
+
+  getRepliesOfComment: publicProcedure
+    .input(z.object({ commentId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.comment.findMany({
+        where: {
+          replyToId: input.commentId,
+        },
+
+        orderBy: {
+          points: "desc",
         },
       });
     }),
