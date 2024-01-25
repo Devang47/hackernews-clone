@@ -1,9 +1,9 @@
-import React from "react";
-import { api } from "~/trpc/server";
-import Post from "../_components/post";
+import React from 'react'
+import { api } from '~/trpc/server'
+import Post from '../_components/post'
 
 export default async function page() {
-  const posts = await api.post.getTopPosts.query();
+  const posts = await api.post.getTopPosts.query()
 
   return (
     <main className="mt-10">
@@ -14,8 +14,8 @@ export default async function page() {
       <div className="mt-10 grid w-full grid-cols-1">
         {posts.length > 0
           ? posts.map((post) => <Post key={post.id} data={post} />)
-          : "No posts to show"}
+          : 'No posts to show'}
       </div>
     </main>
-  );
+  )
 }

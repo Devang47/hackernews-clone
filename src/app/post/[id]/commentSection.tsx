@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import AddComment from "../../_components/addComment";
-import { Comment as IComment } from "@prisma/client";
-import Comment from "../../_components/comment";
+import React, { useState } from 'react'
+import AddComment from '../../_components/addComment'
+import { Comment as IComment } from '@prisma/client'
+import Comment from '../../_components/comment'
 
 function CommentSection({
   comments,
   postId,
-  isUserLoggedIn,
+  isUserLoggedIn
 }: {
-  comments: IComment[];
-  postId: string;
-  isUserLoggedIn: boolean;
+  comments: IComment[]
+  postId: string
+  isUserLoggedIn: boolean
 }) {
-  const [commentsData, setCommentsData] = useState(comments);
+  const [commentsData, setCommentsData] = useState(comments)
 
   return (
     <>
@@ -22,7 +22,7 @@ function CommentSection({
         <div className="mt-12">
           <AddComment
             onSubmit={(comment) => {
-              setCommentsData((data) => [comment, ...data]);
+              setCommentsData((data) => [comment, ...data])
             }}
             postId={postId}
           />
@@ -41,7 +41,7 @@ function CommentSection({
         )}
       </div>
     </>
-  );
+  )
 }
 
-export default CommentSection;
+export default CommentSection

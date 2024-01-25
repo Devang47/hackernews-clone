@@ -1,25 +1,25 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+  publicProcedure
+} from '~/server/api/trpc'
 
 export const postRouter = createTRPCRouter({
   isPostUpvotedByUser: publicProcedure
     .input(z.object({ postId: z.string() }))
     .query(async ({ input, ctx }) => {
-      if (!ctx.session) return;
+      if (!ctx.session) return
 
       const upData = await ctx.db.upvote.findFirst({
         where: {
           postId: input.postId,
-          userId: ctx.session.user.id,
-        },
-      });
+          userId: ctx.session.user.id
+        }
+      })
 
-      return !!upData;
+      return !!upData
     }),
 
   upvotePost: protectedProcedure
@@ -28,38 +28,38 @@ export const postRouter = createTRPCRouter({
       const upData = await ctx.db.upvote.findFirst({
         where: {
           postId: input.postId,
-          userId: ctx.session.user.id,
-        },
-      });
+          userId: ctx.session.user.id
+        }
+      })
 
       if (upData) {
         await Promise.all([
           ctx.db.upvote.delete({
             where: {
-              id: upData.id,
-            },
+              id: upData.id
+            }
           }),
           ctx.db.post.update({
             where: { id: input.postId },
-            data: { points: { decrement: 1 } },
-          }),
-        ]);
+            data: { points: { decrement: 1 } }
+          })
+        ])
       } else {
         await Promise.all([
           ctx.db.upvote.create({
             data: {
               post: { connect: { id: input.postId } },
-              user: { connect: { id: ctx.session.user.id } },
-            },
+              user: { connect: { id: ctx.session.user.id } }
+            }
           }),
           ctx.db.post.update({
             where: { id: input.postId },
-            data: { points: { increment: 1 } },
-          }),
-        ]);
+            data: { points: { increment: 1 } }
+          })
+        ])
       }
 
-      return true;
+      return true
     }),
 
   create: protectedProcedure
@@ -67,8 +67,8 @@ export const postRouter = createTRPCRouter({
       z.object({
         title: z.string().min(1),
         link: z.string().min(1),
-        description: z.string().optional(),
-      }),
+        description: z.string().optional()
+      })
     )
 
     .mutation(async ({ ctx, input }) => {
@@ -76,10 +76,10 @@ export const postRouter = createTRPCRouter({
         data: {
           title: input.title,
           value: input.link,
-          description: input.description ?? "",
-          createdBy: { connect: { id: ctx.session.user.id } },
-        },
-      });
+          description: input.description ?? '',
+          createdBy: { connect: { id: ctx.session.user.id } }
+        }
+      })
     }),
 
   deletePost: protectedProcedure
@@ -87,18 +87,18 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.db.post.findUnique({
         where: {
-          id: input.postId,
-        },
-      });
+          id: input.postId
+        }
+      })
 
       if (post?.createdByUser !== ctx.session.user.name)
-        throw new Error("You are not the owner of this post");
+        throw new Error('You are not the owner of this post')
       else
         return ctx.db.post.delete({
           where: {
-            id: input.postId,
-          },
-        });
+            id: input.postId
+          }
+        })
     }),
 
   getAllPostsByUser: publicProcedure
@@ -106,24 +106,24 @@ export const postRouter = createTRPCRouter({
     .query(({ input, ctx }) => {
       return ctx.db.post.findMany({
         where: {
-          createdBy: { id: input.userId },
-        },
-      });
+          createdBy: { id: input.userId }
+        }
+      })
     }),
 
   getTopPosts: publicProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
-      orderBy: { points: "desc" },
+      orderBy: { points: 'desc' },
 
-      take: 50,
-    });
+      take: 50
+    })
   }),
 
   getLatestPosts: publicProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    });
+      orderBy: { createdAt: 'desc' },
+      take: 50
+    })
   }),
 
   getPostInfo: publicProcedure
@@ -131,21 +131,21 @@ export const postRouter = createTRPCRouter({
     .query(({ input, ctx }) => {
       return ctx.db.post.findUnique({
         where: {
-          id: input.postId,
-        },
-      });
+          id: input.postId
+        }
+      })
     }),
 
   getTopPostsIn24Hours: publicProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
       where: {
         createdAt: {
-          gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        },
+          gte: new Date(Date.now() - 24 * 60 * 60 * 1000)
+        }
       },
-      orderBy: { points: "desc" },
+      orderBy: { points: 'desc' },
 
-      take: 50,
-    });
-  }),
-});
+      take: 50
+    })
+  })
+})

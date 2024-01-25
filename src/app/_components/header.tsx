@@ -1,9 +1,9 @@
-import Link from "next/link";
-import React from "react";
-import { getServerAuthSession } from "~/server/auth";
+import Link from 'next/link'
+import React from 'react'
+import { getServerAuthSession } from '~/server/auth'
 
 async function Header() {
-  const session = await getServerAuthSession();
+  const session = await getServerAuthSession()
 
   return (
     <header className="flex w-full items-center gap-6 border-b border-gray-800 py-4 text-sm text-gray-400">
@@ -38,7 +38,7 @@ async function Header() {
         </Link>
       )}
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

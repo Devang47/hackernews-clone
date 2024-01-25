@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import { Post } from "@prisma/client";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Separator } from "~/components/ui/separator";
-import { Skeleton } from "~/components/ui/skeleton";
-import UpIcon from "~/lib/icons/upIcon";
-import { cn } from "~/lib/utils";
-import { api } from "~/trpc/react";
+import { Post } from '@prisma/client'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { Separator } from '~/components/ui/separator'
+import { Skeleton } from '~/components/ui/skeleton'
+import UpIcon from '~/lib/icons/upIcon'
+import { cn } from '~/lib/utils'
+import { api } from '~/trpc/react'
 
 function Post({ data }: { data: Post }) {
-  const [postData, setData] = useState(data);
-  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [postData, setData] = useState(data)
+  const [isUpvoted, setIsUpvoted] = useState(false)
 
-  const upvotePost = api.post.upvotePost.useMutation();
+  const upvotePost = api.post.upvotePost.useMutation()
   let { data: isPostUpvoted, isLoading } =
     api.post.isPostUpvotedByUser.useQuery({
-      postId: data.id,
-    });
+      postId: data.id
+    })
 
   useEffect(() => {
-    setIsUpvoted(isPostUpvoted ?? false);
-  }, [isPostUpvoted]);
+    setIsUpvoted(isPostUpvoted ?? false)
+  }, [isPostUpvoted])
 
   const handleUpvote = () => {
-    upvotePost.mutate({ postId: postData.id });
+    upvotePost.mutate({ postId: postData.id })
 
     setData((data) => ({
       ...data,
-      points: isUpvoted ? data.points - 1 : data.points + 1,
-    }));
-    setIsUpvoted((isUpvoted) => !isUpvoted);
-  };
+      points: isUpvoted ? data.points - 1 : data.points + 1
+    }))
+    setIsUpvoted((isUpvoted) => !isUpvoted)
+  }
 
   return isLoading ? (
     <div className="flex w-full gap-2.5 py-3">
@@ -53,8 +53,8 @@ function Post({ data }: { data: Post }) {
         <button
           onClick={handleUpvote}
           className={cn(
-            "rounded-md bg-gray-900 p-1",
-            isUpvoted && "bg-gray-700",
+            'rounded-md bg-gray-900 p-1',
+            isUpvoted && 'bg-gray-700'
           )}
         >
           <UpIcon />
@@ -86,14 +86,14 @@ function Post({ data }: { data: Post }) {
           <div className="text-opacity-80"> {postData.points} points</div>
           <Separator orientation="vertical" className="h-2 bg-white/80" />
           <div className="text-opacity-80">
-            <Link className="hover:underline" href={"/post/" + postData.id}>
+            <Link className="hover:underline" href={'/post/' + postData.id}>
               discuss
             </Link>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Post;
+export default Post

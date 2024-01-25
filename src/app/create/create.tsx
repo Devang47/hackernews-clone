@@ -1,61 +1,61 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import * as z from "zod";
-import { toast } from "sonner";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import * as z from 'zod'
+import { toast } from 'sonner'
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import { api } from "~/trpc/react";
-import { useState } from "react";
+  FormMessage
+} from '~/components/ui/form'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Textarea } from '~/components/ui/textarea'
+import { api } from '~/trpc/react'
+import { useState } from 'react'
 
 const FormSchema = z.object({
   title: z.string().min(5, {
-    message: "Title must be at least 5 characters.",
+    message: 'Title must be at least 5 characters.'
   }),
   url: z.string().url(),
-  description: z.string().optional(),
-});
+  description: z.string().optional()
+})
 
 export default function CreatePost() {
-  const router = useRouter();
-  const createPost = api.post.create.useMutation();
+  const router = useRouter()
+  const createPost = api.post.create.useMutation()
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: "",
-      url: "",
-      description: "",
-    },
-  });
+      title: '',
+      url: '',
+      description: ''
+    }
+  })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      setLoading(true);
+      setLoading(true)
       const post = await createPost.mutateAsync({
         title: data.title,
         link: data.url,
-        description: data.description,
-      });
-      toast.success("Successfully created post");
-      setLoading(false);
+        description: data.description
+      })
+      toast.success('Successfully created post')
+      setLoading(false)
 
-      router.push("/post/" + post.id);
+      router.push('/post/' + post.id)
     } catch (error: any) {
-      toast.error(error?.message ?? "Something went wrong");
+      toast.error(error?.message ?? 'Something went wrong')
     }
   }
 
@@ -121,5 +121,5 @@ export default function CreatePost() {
         </form>
       </Form>
     </main>
-  );
+  )
 }

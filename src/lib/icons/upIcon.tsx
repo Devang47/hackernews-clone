@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 function UpIcon() {
   return (
@@ -11,7 +11,7 @@ function UpIcon() {
         />
       </g>
     </svg>
-  );
+  )
 }
 
-export default UpIcon;
+export default UpIcon

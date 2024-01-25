@@ -1,12 +1,12 @@
-import React from "react";
-import { cn } from "~/lib/utils";
+import React from 'react'
+import { cn } from '~/lib/utils'
 
-function Spinner({ width = "w-6" }: { width?: string }) {
+function Spinner({ width = 'w-6' }: { width?: string }) {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className={cn("inline animate-spin fill-white text-white/20", width)}
+        className={cn('inline animate-spin fill-white text-white/20', width)}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ function Spinner({ width = "w-6" }: { width?: string }) {
       </svg>
       <span className="sr-only">Loading...</span>
     </div>
-  );
+  )
 }
 
-export default Spinner;
+export default Spinner

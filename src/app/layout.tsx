@@ -1,28 +1,28 @@
-import "~/styles/globals.css";
+import '~/styles/globals.css'
 
-import { Inter } from "next/font/google";
+import { Inter } from 'next/font/google'
 
-import { TRPCReactProvider } from "~/trpc/react";
-import Header from "./_components/header";
-import { Toaster } from "sonner";
-import { Metadata } from "next";
+import { TRPCReactProvider } from '~/trpc/react'
+import Header from './_components/header'
+import { Toaster } from 'sonner'
+import { Metadata } from 'next'
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+  subsets: ['latin'],
+  variable: '--font-sans'
+})
 
 export const metadata: Metadata = {
-  title: "Hacker news clone",
-  description: "Hacker news clone by @devang47",
-  icons: [{ rel: "icon", url: "/favicon.png" }],
-  themeColor: "#000000",
-};
+  title: 'Hacker news clone',
+  description: 'Hacker news clone by @devang47',
+  icons: [{ rel: 'icon', url: '/favicon.png' }],
+  themeColor: '#000000'
+}
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -39,5 +39,5 @@ export default function RootLayout({
         <Toaster />
       </body>
     </html>
-  );
+  )
 }

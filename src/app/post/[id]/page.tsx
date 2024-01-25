@@ -1,31 +1,31 @@
-import { api } from "~/trpc/server";
-import { formatDistance } from "date-fns";
-import React from "react";
-import Link from "next/link";
-import CommentSection from "./commentSection";
-import { getServerAuthSession } from "~/server/auth";
+import { api } from '~/trpc/server'
+import { formatDistance } from 'date-fns'
+import React from 'react'
+import Link from 'next/link'
+import CommentSection from './commentSection'
+import { getServerAuthSession } from '~/server/auth'
 
 export default async function page({ params }: { params: { id: string } }) {
   const [data, comments, session] = await Promise.all([
     api.post.getPostInfo.query({
-      postId: params.id ?? "",
+      postId: params.id ?? ''
     }),
     api.comment.getCommentsOfPost.query({
-      postId: params.id ?? "",
+      postId: params.id ?? ''
     }),
-    getServerAuthSession(),
-  ]);
+    getServerAuthSession()
+  ])
 
   if (!data)
     return (
       <h1 className="py-20 text-center text-2xl font-medium">
         404 | Not found
       </h1>
-    );
+    )
 
   let datePassed = formatDistance(new Date(data.createdAt), new Date(), {
-    addSuffix: true,
-  });
+    addSuffix: true
+  })
 
   return (
     <main className="mt-8 pb-20">
@@ -50,10 +50,10 @@ export default async function page({ params }: { params: { id: string } }) {
 
           <div className="mt-2 text-sm">
             <span className="opacity-50">Created: </span>
-            {new Date(data.createdAt).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
+            {new Date(data.createdAt).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
             })}
 
             <span className="ml-2 opacity-70">({datePassed})</span>
@@ -63,7 +63,7 @@ export default async function page({ params }: { params: { id: string } }) {
             <span className="opacity-50">by </span>
             <Link
               className="hover:underline"
-              href={"/user/" + data.createdByUser}
+              href={'/user/' + data.createdByUser}
             >
               {data.createdByUser}
             </Link>
@@ -81,5 +81,5 @@ export default async function page({ params }: { params: { id: string } }) {
         </p>
       )}
     </main>
-  );
+  )
 }

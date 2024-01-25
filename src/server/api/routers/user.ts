@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 
 export const userRouter = createTRPCRouter({
   getUserInfo: publicProcedure
@@ -8,14 +8,14 @@ export const userRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const userData = await ctx.db.user.findUnique({
         where: {
-          name: input.userId,
+          name: input.userId
         },
         select: {
           name: true,
-          createdAt: true,
-        },
-      });
-      return userData;
+          createdAt: true
+        }
+      })
+      return userData
     }),
 
   getPostsByUser: publicProcedure
@@ -23,11 +23,11 @@ export const userRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return await ctx.db.post.findMany({
         where: {
-          createdByUser: input.userId,
+          createdByUser: input.userId
         },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      });
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      })
     }),
 
   getCommentsByUser: publicProcedure
@@ -35,10 +35,10 @@ export const userRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return await ctx.db.comment.findMany({
         where: {
-          createdByUser: input.userId,
+          createdByUser: input.userId
         },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      });
-    }),
-});
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      })
+    })
+})

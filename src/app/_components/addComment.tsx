@@ -1,55 +1,55 @@
-"use client";
+'use client'
 
-import { Comment } from "@prisma/client";
-import React from "react";
-import Spinner from "~/app/_components/spinner";
-import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
-import { api } from "~/trpc/react";
-import { toast } from "sonner";
+import { Comment } from '@prisma/client'
+import React from 'react'
+import Spinner from '~/app/_components/spinner'
+import { Button } from '~/components/ui/button'
+import { Textarea } from '~/components/ui/textarea'
+import { api } from '~/trpc/react'
+import { toast } from 'sonner'
 
 function AddComment({
   postId,
   commentId,
-  onSubmit,
+  onSubmit
 }: {
-  postId: string;
-  commentId?: string;
-  onSubmit?: (comment: Comment) => void;
+  postId: string
+  commentId?: string
+  onSubmit?: (comment: Comment) => void
 }) {
-  const [commentInput, setCommentInput] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const addComment = api.comment.create.useMutation();
-  const replyToComment = api.comment.replyToComment.useMutation();
+  const [commentInput, setCommentInput] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const addComment = api.comment.create.useMutation()
+  const replyToComment = api.comment.replyToComment.useMutation()
 
   const handleCreateComment = async (e: any) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (!commentInput.trim()) return;
-    setLoading(true);
+    if (!commentInput.trim()) return
+    setLoading(true)
 
     try {
-      let comment: Comment;
+      let comment: Comment
       if (commentId) {
         comment = await replyToComment.mutateAsync({
           postId,
           commentId,
-          content: commentInput,
-        });
+          content: commentInput
+        })
       } else {
         comment = await addComment.mutateAsync({
           postId,
-          content: commentInput,
-        });
+          content: commentInput
+        })
       }
 
-      onSubmit && onSubmit(comment);
-      setCommentInput("");
-      setLoading(false);
+      onSubmit && onSubmit(comment)
+      setCommentInput('')
+      setLoading(false)
     } catch (error: any) {
-      toast.error(error?.message ?? "Something went wrong");
+      toast.error(error?.message ?? 'Something went wrong')
     }
-  };
+  }
 
   return (
     <form className="max-w-md" onSubmit={handleCreateComment}>
@@ -65,10 +65,10 @@ function AddComment({
         variant="secondary"
         type="submit"
       >
-        {loading ? <Spinner /> : "Add comment"}
+        {loading ? <Spinner /> : 'Add comment'}
       </Button>
     </form>
-  );
+  )
 }
 
-export default AddComment;
+export default AddComment

@@ -1,49 +1,49 @@
-"use client";
+'use client'
 
-import { Comment } from "@prisma/client";
-import { formatDistance } from "date-fns";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Skeleton } from "~/components/ui/skeleton";
-import UpIcon from "~/lib/icons/upIcon";
-import { cn } from "~/lib/utils";
-import { api } from "~/trpc/react";
-import AddComment from "./addComment";
-import Spinner from "~/app/_components/spinner";
+import { Comment } from '@prisma/client'
+import { formatDistance } from 'date-fns'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { Skeleton } from '~/components/ui/skeleton'
+import UpIcon from '~/lib/icons/upIcon'
+import { cn } from '~/lib/utils'
+import { api } from '~/trpc/react'
+import AddComment from './addComment'
+import Spinner from '~/app/_components/spinner'
 
 function Comment({
   data,
-  isUserLoggedIn,
+  isUserLoggedIn
 }: {
-  data: Comment;
-  isUserLoggedIn: boolean;
+  data: Comment
+  isUserLoggedIn: boolean
 }) {
-  const [isUpvoted, setIsUpvoted] = useState(false);
-  const [isReplyModelOpen, setIsReplyModelOpen] = useState(false);
+  const [isUpvoted, setIsUpvoted] = useState(false)
+  const [isReplyModelOpen, setIsReplyModelOpen] = useState(false)
 
   let datePassed = formatDistance(new Date(data.createdAt), new Date(), {
-    addSuffix: true,
-  });
+    addSuffix: true
+  })
 
-  const upvoteComment = api.comment.upvoteComment.useMutation();
+  const upvoteComment = api.comment.upvoteComment.useMutation()
   let { data: isPostUpvoted, isLoading } =
     api.comment.isCommentUpvotedByUser.useQuery({
-      commentId: data.id,
-    });
+      commentId: data.id
+    })
 
   const { data: replyComments, isLoading: isRepliesLoading } =
     api.comment.getRepliesOfComment.useQuery({
-      commentId: data.id,
-    });
+      commentId: data.id
+    })
 
   useEffect(() => {
-    setIsUpvoted(isPostUpvoted ?? false);
-  }, [isPostUpvoted]);
+    setIsUpvoted(isPostUpvoted ?? false)
+  }, [isPostUpvoted])
 
   const handleUpvote = () => {
-    upvoteComment.mutate({ commentId: data.id });
-    setIsUpvoted((isUpvoted) => !isUpvoted);
-  };
+    upvoteComment.mutate({ commentId: data.id })
+    setIsUpvoted((isUpvoted) => !isUpvoted)
+  }
 
   return isLoading ? (
     <div className="flex w-full gap-2.5 py-3">
@@ -60,8 +60,8 @@ function Comment({
           <button
             onClick={handleUpvote}
             className={cn(
-              "rounded-md bg-gray-900 p-1",
-              isUpvoted && "bg-gray-700",
+              'rounded-md bg-gray-900 p-1',
+              isUpvoted && 'bg-gray-700'
             )}
           >
             <UpIcon />
@@ -72,7 +72,7 @@ function Comment({
           <div className="flex items-center gap-2 text-sm opacity-80">
             <Link
               className="!p-0 hover:underline"
-              href={"/user/" + data.createdByUser}
+              href={'/user/' + data.createdByUser}
             >
               {data.createdByUser}
             </Link>
@@ -96,8 +96,8 @@ function Comment({
         <div className="mt-3 pl-7">
           <AddComment
             onSubmit={(comment) => {
-              setIsReplyModelOpen((state) => !state);
-              replyComments?.splice(0, 0, comment);
+              setIsReplyModelOpen((state) => !state)
+              replyComments?.splice(0, 0, comment)
             }}
             postId={data.postId}
             commentId={data.id}
@@ -117,7 +117,7 @@ function Comment({
         ))
       )}
     </div>
-  );
+  )
 }
 
-export default Comment;
+export default Comment

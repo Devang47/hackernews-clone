@@ -1,32 +1,32 @@
-import React from "react";
-import Post from "~/app/_components/post";
-import Comment from "~/app/_components/comment";
-import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
-import { formatDistance } from "date-fns";
+import React from 'react'
+import Post from '~/app/_components/post'
+import Comment from '~/app/_components/comment'
+import { getServerAuthSession } from '~/server/auth'
+import { api } from '~/trpc/server'
+import { formatDistance } from 'date-fns'
 
 export default async function page({ params }: { params: { id: string } }) {
   const [userData, userPosts, userComments, session] = await Promise.all([
     api.user.getUserInfo.query({
-      userId: params.id ?? "",
+      userId: params.id ?? ''
     }),
     api.user.getPostsByUser.query({
-      userId: params.id ?? "",
+      userId: params.id ?? ''
     }),
     api.user.getCommentsByUser.query({
-      userId: params.id ?? "",
+      userId: params.id ?? ''
     }),
-    getServerAuthSession(),
-  ]);
+    getServerAuthSession()
+  ])
 
   if (!userData)
     return (
       <h1 className="py-20 text-center text-2xl font-medium">User not found</h1>
-    );
+    )
 
   let datePassed = formatDistance(new Date(userData.createdAt), new Date(), {
-    addSuffix: true,
-  });
+    addSuffix: true
+  })
 
   return (
     <main className="mt-8">
@@ -37,10 +37,10 @@ export default async function page({ params }: { params: { id: string } }) {
           </div>
           <div className="mt-2">
             <span className="opacity-50">Created: </span>
-            {new Date(userData.createdAt).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
+            {new Date(userData.createdAt).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
             })}
 
             <span className="opacity-70">{datePassed}</span>
@@ -53,7 +53,7 @@ export default async function page({ params }: { params: { id: string } }) {
             <div className="mt-2 grid w-full grid-cols-1">
               {userPosts
                 ? userPosts?.map((postData) => <Post data={postData} />)
-                : "No posts"}
+                : 'No posts'}
             </div>
           </div>
 
@@ -67,7 +67,7 @@ export default async function page({ params }: { params: { id: string } }) {
                   ? userComments?.map((commentData) => (
                       <Comment isUserLoggedIn={!!session} data={commentData} />
                     ))
-                  : "No posts"}
+                  : 'No posts'}
               </div>
             </div>
           )}
@@ -78,5 +78,5 @@ export default async function page({ params }: { params: { id: string } }) {
         </p>
       )}
     </main>
-  );
+  )
 }
